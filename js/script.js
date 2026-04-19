@@ -6,6 +6,13 @@ const nextBtn = document.getElementById('nextBtn');
 const resetBtn = document.getElementById('resetBtn');
 const app = document.getElementById('app');
 const paginationInfo = document.getElementById('pagination-info');
+const favoritesBtn = document.getElementById('favoritesBtn');
+
+let favorites = [];
+
+const updateFavoritesBtn = () => {
+    favoritesBtn.textContent = `Favoritos (${favorites.length})`;
+};
 
 // Función reutilizable para fetch con manejo de errores
 async function fetchJSON(url) {
@@ -82,6 +89,25 @@ const createPokemonCard = (pokemon) => {
     const card = document.createElement('div');
     card.classList.add('pokemon-card');
 
+    const star = document.createElement('span');
+    star.classList.add('favorite-star');
+    star.textContent = '★';
+    if (favorites.includes(pokemon.id)) star.classList.add('active');
+    star.addEventListener('click', () => {
+        if (!star.classList.contains('active') && favorites.length >= 15) {
+            alert('Has alcanzado el límite de 15 pokémons favoritos.');
+            return;
+        }
+        if (star.classList.toggle('active')) {
+            favorites.push(pokemon.id);
+        } else {
+            favorites.splice(favorites.indexOf(pokemon.id), 1);
+        }
+        localStorage.setItem('pokefavorites', JSON.stringify(favorites));
+        updateFavoritesBtn();
+    });
+    card.appendChild(star);
+
     const img = document.createElement('img');
     img.src = pokemon.sprites.other['official-artwork'].front_default;
     img.alt = pokemon.name;
@@ -119,7 +145,32 @@ const renderPokemons = async (url) => {
     }
 }
 
-const init = () => renderPokemons();
+//Renderiza solo los pokémons favoritos
+const renderFavorites = async () => {
+    app.innerHTML = '';
+    app.classList.remove('single-result');
+    updatePaginationButtons(null, null);
+
+    if (favorites.length === 0) {
+        paginationInfo.textContent = '';
+        app.innerHTML = `<p class="error">No tienes pokémons favoritos aún.</p>`;
+        return;
+    }
+
+    paginationInfo.textContent = `Mostrando ${favorites.length} favorito${favorites.length !== 1 ? 's' : ''}`;
+    favorites.forEach(async (id) => {
+        const detail = await getPokemonDetail(id);
+        app.appendChild(createPokemonCard(detail));
+    });
+}
+
+favoritesBtn.addEventListener('click', renderFavorites);
+
+const init = () => {
+    favorites = JSON.parse(localStorage.getItem('pokefavorites') ?? '[]');
+    updateFavoritesBtn();
+    renderPokemons();
+};
 
 // Inicializamos la aplicación
 init();

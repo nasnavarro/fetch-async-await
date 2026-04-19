@@ -42,6 +42,7 @@ header {
 }
 
 .pokemon-card {
+  position: relative;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -55,6 +56,21 @@ header {
 .pokemon-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.favorite-star {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 1.3rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.favorite-star.active {
+  color: #f5c518;
 }
 
 .pokemon-card img {
@@ -107,7 +123,7 @@ header {
   border-radius: 4px;
 }
 
-#searchBtn, #prevBtn, #nextBtn, #resetBtn {
+#searchBtn, #prevBtn, #nextBtn, #resetBtn, #favoritesBtn {
   padding: 10px;
   border: none;
   border-radius: 4px;
@@ -119,12 +135,22 @@ header {
   color: white;
 }
 
-#prevBtn, #nextBtn, #resetBtn {
+#prevBtn, #nextBtn {
   background-color: #2196F3;
   color: white;
 }
 
-#searchBtn:hover, #prevBtn:hover, #nextBtn:hover, #resetBtn:hover {
+#resetBtn {
+  background-color: #e53935;
+  color: white;
+}
+
+#favoritesBtn {
+  background-color: #f5c518;
+  color: #333;
+}
+
+#searchBtn:hover, #prevBtn:hover, #nextBtn:hover, #resetBtn:hover, #favoritesBtn:hover {
   opacity: 0.8;
 }
 
